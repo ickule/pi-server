@@ -1,0 +1,15 @@
+---
+- name: RaspberryPi
+  hosts: pi
+
+  handlers:
+    - name: Handlers
+      ansible.builtin.import_tasks: handlers/main.yml
+
+  roles:
+    - role: system
+    - role: hostname
+    - role: geerlingguy.security
+    - role: unatended_upgrades
+    - role: chriswayg.msmtp-mailer
+    - role: access

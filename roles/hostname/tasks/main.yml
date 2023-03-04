@@ -1,0 +1,11 @@
+---
+- name: Set the hostname
+  ansible.builtin.hostname:
+    name: "{{ hostname }}"
+
+- name: Set the hosts file
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    insertafter: ^127\.0\.0\.1 *localhost
+    line: 127.0.0.1 {{ hostname }}
+    mode: 0644

@@ -1,0 +1,53 @@
+---
+- name: Install hostapd
+  ansible.builtin.apt:
+    name: hostapd
+    update_cache: true
+  notify: Restart global hostapd systemd service
+
+- name: Create netdev file
+  ansible.builtin.blockinfile:
+    path: /etc/systemd/network/bridge-{{ bridge.interface }}.netdev
+    insertafter: EOF
+    block: |
+      [NetDev]
+      Name={{ bridge.interface }}
+      Kind=bridge
+    create: true
+    mode: 644
+
+- name: Create network file
+  ansible.builtin.blockinfile:
+    path: /etc/systemd/network/{{ bridge.interface }}-member-{{ ethernet.interface }}.network
+    insertafter: EOF
+    block: |
+      [Match]
+      Name={{ ethernet.interface }}
+      [Network]
+      Bridge={{ bridge.interface }}
+    create: true
+    mode: 644
+
+- name: Update dhcp.conf
+  ansible.builtin.blockinfile:
+    path: /etc/dhcpcd.conf
+    insertafter: EOF
+    block: |
+      denyinterfaces wlan0 eth0
+      interface br0
+    backup: true
+
+- name: Unblock wifi
+  ansible.builtin.command: rfkill unblock wlan
+
+- name: Copy hostapd.conf
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: /etc/hostapd/{{ item }}
+    mode: 0644
+  with_items:
+    - hostapd.conf
+  notify: Reboot
+
+- name: Allow all handlers to run
+  ansible.builtin.meta: flush_handlers

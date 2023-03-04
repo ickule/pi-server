@@ -1,0 +1,16 @@
+country_code={{ wireless.country }}
+interface={{ wireless.interface }}
+bridge={{ bridge.interface }}
+ssid={{ ssid }}
+hw_mode={{ wireless.mode }}
+channel={{ wireless.channel }}
+{{ wireless.ieee80211 | join('\n') }}
+wmm_enabled={{ wireless.wmm_enabled }}
+macaddr_acl={{ wireless.macaddr_acl }}
+auth_algs={{ wireless.auth_algs }}
+ignore_broadcast_ssid={{ wireless.ignore_broadcast_ssid }}
+wpa={{ wireless.wpa.version }}
+wpa_passphrase={{ passphrase }}
+wpa_key_mgmt={{ wireless.wpa.key_mgmt }}
+wpa_pairwise={{ wireless.wpa.pairwise }}
+rsn_pairwise={{ wireless.wpa.rsn_pairwise }}
